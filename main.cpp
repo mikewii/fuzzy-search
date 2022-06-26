@@ -7,7 +7,7 @@ int main()
 {
     Fuzzy<string> fz;
 
-    fz.set_pattern(u"pokemon");
+    fz.set_pattern(u"POkemon");
     fz.set_separator(u"\n");
     fz.set_ignore_case(true);
 

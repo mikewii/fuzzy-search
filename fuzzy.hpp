@@ -38,7 +38,7 @@ public:
             std::cout << converter.to_bytes(line) << std::endl;
     }
 
-    void                        set_ignore_case(const bool value) { this->m_ignore_case = value; }
+    void                        set_ignore_case(const bool value);
 
     void                        set_data(const string& data);
     void                        set_data(const std::vector<string>& data);
@@ -68,6 +68,7 @@ private:
 
     void separate(const string& text);
     void initialize_sets(void);
+    void to_lower(string& str);
 };
 
 template class Fuzzy<std::string>;

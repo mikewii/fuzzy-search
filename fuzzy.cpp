@@ -25,6 +25,10 @@ template<typename string>
 void Fuzzy<string>::set_pattern(const string &pattern)
 {
     this->m_pattern = pattern;
+
+    if (this->m_ignore_case)
+        this->to_lower(this->m_pattern);
+
     this->initialize_sets();
 }
 
@@ -66,13 +70,8 @@ void Fuzzy<string>::process(void)
         size_t hits = 0;
         string line = *it;
 
-        if (this->m_ignore_case) {
-            std::transform(line.begin(), line.end(), line.begin(),
-            [](const char_type c)
-            {
-                return std::tolower(c);
-            });
-        }
+        if (this->m_ignore_case)
+            this->to_lower(line);
 
         for (const auto& ch : line)
             multiset_line.insert(ch);
@@ -88,6 +87,15 @@ void Fuzzy<string>::process(void)
         if (hits == this->m_set.size())
             this->m_result.push_back(*it);
     }
+}
+
+template<typename string>
+void Fuzzy<string>::set_ignore_case(const bool value)
+{
+    this->m_ignore_case = value;
+
+    // reinitialize pattern to apply ignore case
+    this->set_pattern(this->m_pattern);
 }
 
 template<typename string>
@@ -112,4 +120,14 @@ void Fuzzy<string>::initialize_sets(void)
         this->m_set.insert(ch);
         this->m_multiset.insert(ch);
     }
+}
+
+template<typename string>
+void Fuzzy<string>::to_lower(string &str)
+{
+    std::transform(str.begin(), str.end(), str.begin(),
+    [](const char_type c)
+    {
+        return std::tolower(c);
+    });
 }

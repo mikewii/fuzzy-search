@@ -9,11 +9,7 @@ int main()
     fz.set_pattern("pokemon");
     fz.set_separator("\n");
 
-    auto out = fz.search("pppppp\n99\n999\nanimal crossing\npokeémon\nsuper mario bros.\npackman\nanimal crossing: new leaf");
-
-    for (const auto& line : out)
-        std::cout << line << std::endl;
-
+    auto out = fz.search("pppppp\n99\n999\nanimal crossing\npokeémon\nsuper mario bros.\npackman\nanimal crossing: new leaf", true);
 
     return 0;
 }

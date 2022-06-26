@@ -1,8 +1,6 @@
 #include "fuzzy.hpp"
 #include <algorithm>
 
-template class Fuzzy<std::string>;
-
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern)
 {
@@ -24,7 +22,7 @@ void Fuzzy<string>::set_separator(const string &separator)
 }
 
 template<typename string>
-std::vector<string> Fuzzy<string>::search(const string& text)
+std::vector<string> Fuzzy<string>::search(const string& text, const bool print)
 {
     std::vector<string> out;
     std::vector<string> separated;
@@ -52,6 +50,9 @@ std::vector<string> Fuzzy<string>::search(const string& text)
         if (hits == this->m_set.size())
             out.push_back(line);
     }
+
+    if (print)
+        this->print(out);
 
     return out;
 }

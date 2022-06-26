@@ -9,7 +9,11 @@ int main()
     fz.set_pattern("pokemon");
     fz.set_separator("\n");
 
-    auto out = fz.search("pppppp\n99\n999\nanimal crossing\npokeémon\nsuper mario bros.\npackman\nanimal crossing: new leaf", true);
+    fz.search("pppppp\n99\n999\nanimal crossing\npokeémon\nsuper mario bros.\npackman\nanimal crossing: new leaf");
+
+    fz.print();
+
+    auto out = fz.get_result();
 
     return 0;
 }

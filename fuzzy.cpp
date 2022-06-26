@@ -22,17 +22,27 @@ void Fuzzy<string>::set_separator(const string &separator)
 }
 
 template<typename string>
-std::vector<string> Fuzzy<string>::search(const string& text, const bool print)
+void Fuzzy<string>::search(const string& text)
 {
-    std::vector<string> out;
-    std::vector<string> separated;
-
     if (this->m_pattern.empty())
-        return out;
+        return;
 
-    separated = this->separate(text);
+    this->process(this->separate(text));
+}
 
-    for (const auto& line : separated) {
+template<typename string>
+void Fuzzy<string>::search(const std::vector<string> &vector)
+{
+    if (this->m_pattern.empty())
+        return;
+
+    this->process(vector);
+}
+
+template<typename string>
+void Fuzzy<string>::process(const std::vector<string> &vector)
+{
+    for (const auto& line : vector) {
         std::unordered_multiset<char_type> multiset_line;
         size_t hits = 0;
 
@@ -48,13 +58,8 @@ std::vector<string> Fuzzy<string>::search(const string& text, const bool print)
         }
 
         if (hits == this->m_set.size())
-            out.push_back(line);
+            this->m_result.push_back(line);
     }
-
-    if (print)
-        this->print(out);
-
-    return out;
 }
 
 template<typename string>

@@ -3,18 +3,20 @@
 
 template<typename string>
 Fuzzy<string>::Fuzzy()
+    : m_ignore_case(false)
 {
 }
 
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern)
+    : m_ignore_case(false)
 {
     this->set_pattern(pattern);
 }
 
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern, const string &separator)
-    : m_separator(separator)
+    : m_separator(separator), m_ignore_case(false)
 {
     this->set_pattern(pattern);
 }

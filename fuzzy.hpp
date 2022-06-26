@@ -16,17 +16,13 @@ public:
     explicit Fuzzy(const string& pattern);
     explicit Fuzzy(const string& pattern, const string& separator);
 
-    void process(void);
-
-    void set_data(const string& data);
-    void set_data(const std::vector<string>& data);
-
-    void set_pattern(const string& pattern);
-    void set_separator(const string& separator);
+    void process(void);    
 
     template <typename ch = char_type>
     typename std::enable_if<std::is_same<ch, char>::value, void>::type
     print(void) const {
+        std::cout << "Result for pattern: " << this->m_pattern << std::endl;
+
         for (const auto& line : this->m_result)
             std::cout << line << std::endl;
     }
@@ -35,9 +31,18 @@ public:
     typename std::enable_if<!std::is_same<ch, char>::value, void>::type
     print(void) const {
         std::wstring_convert<std::codecvt_utf8<char_type>, char_type> converter;
+
+        std::cout << "Result for pattern: " << converter.to_bytes(this->m_pattern) << std::endl;
+
         for (const auto& line : this->m_result)
             std::cout << converter.to_bytes(line) << std::endl;
     }
+
+    void                        set_data(const string& data);
+    void                        set_data(const std::vector<string>& data);
+
+    void                        set_pattern(const string& pattern);
+    void                        set_separator(const string& separator);
 
     std::vector<string>         get_result(void) { return this->m_result; }
     const std::vector<string>&  get_result(void) const { return this->m_result; }
@@ -45,11 +50,11 @@ public:
     std::vector<string>         get_data(void) { return this->m_data; }
     const std::vector<string>&  get_data(void) const { return this->m_data; }
 
-    string          get_pattern(void) { return this->m_pattern; }
-    const string&   get_pattern(void) const { return this->m_pattern; }
+    string                      get_pattern(void) { return this->m_pattern; }
+    const string&               get_pattern(void) const { return this->m_pattern; }
 
-    string          get_separator(void) { return this->m_separator; }
-    const string&   get_separator(void) const { return this->m_separator; }
+    string                      get_separator(void) { return this->m_separator; }
+    const string&               get_separator(void) const { return this->m_separator; }
 
 private:
     std::vector<string>                 m_data;
@@ -58,7 +63,7 @@ private:
     std::unordered_multiset<char_type>  m_multiset;
     string  m_pattern, m_separator;
 
-    const std::vector<string> separate(const string& text);
+    void separate(const string& text);
     void initialize_sets(void);
 };
 

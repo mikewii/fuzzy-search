@@ -38,7 +38,7 @@ void Fuzzy<string>::set_data(const string& data)
     if (this->m_pattern.empty())
         return;
 
-    this->m_data = this->separate(data);
+    this->separate(data);
 
     this->m_result.reserve(this->m_data.size());
 }
@@ -80,18 +80,15 @@ void Fuzzy<string>::process(void)
 }
 
 template<typename string>
-const std::vector<string> Fuzzy<string>::separate(const string &text)
+void Fuzzy<string>::separate(const string &text)
 {
-    std::vector<string> out;
     size_t pos, offset = 0;
 
     while ((pos = text.find(this->m_separator, offset)) != string::npos) {
-        out.push_back(text.substr(offset, pos - offset));
+        this->m_data.push_back(text.substr(offset, pos - offset));
         offset = pos + this->m_separator.length();
     }
-    out.push_back(text.substr(offset));
-
-    return out;
+    this->m_data.push_back(text.substr(offset));
 }
 
 template<typename string>

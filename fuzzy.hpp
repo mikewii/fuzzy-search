@@ -38,6 +38,8 @@ public:
             std::cout << converter.to_bytes(line) << std::endl;
     }
 
+    void                        set_ignore_case(const bool value) { this->m_ignore_case = value; }
+
     void                        set_data(const string& data);
     void                        set_data(const std::vector<string>& data);
 
@@ -62,6 +64,7 @@ private:
     std::unordered_set<char_type>       m_set;
     std::unordered_multiset<char_type>  m_multiset;
     string  m_pattern, m_separator;
+    bool    m_ignore_case;
 
     void separate(const string& text);
     void initialize_sets(void);

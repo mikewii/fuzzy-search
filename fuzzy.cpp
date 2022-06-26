@@ -59,9 +59,18 @@ void Fuzzy<string>::process(void)
 {
     this->m_result.clear();
 
-    for (const auto& line : this->m_data) {
+    for (auto it = this->m_data.begin(); it < this->m_data.end(); it++) {
         std::unordered_multiset<char_type> multiset_line;
         size_t hits = 0;
+        string line = *it;
+
+        if (this->m_ignore_case) {
+            std::transform(line.begin(), line.end(), line.begin(),
+            [](const char_type c)
+            {
+                return std::tolower(c);
+            });
+        }
 
         for (const auto& ch : line)
             multiset_line.insert(ch);
@@ -75,7 +84,7 @@ void Fuzzy<string>::process(void)
         }
 
         if (hits == this->m_set.size())
-            this->m_result.push_back(line);
+            this->m_result.push_back(*it);
     }
 }
 

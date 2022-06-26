@@ -1,18 +1,19 @@
 #include <iostream>
 #include "fuzzy.hpp"
 
-using string = std::string;
+using string = std::u16string;
 
 int main()
 {
     Fuzzy<string> fz;
 
-    fz.set_pattern("pokemon");
-    fz.set_separator("\n");
+    fz.set_pattern(u"pokemon");
+    fz.set_separator(u"\n");
+    fz.set_ignore_case(true);
 
-    fz.set_data("pppppp\n99\n999\nanimal crossing\npokeémon\nsuper mario bros.\npackman\nanimal crossing: new leaf");
+    fz.set_data(u"pppppp\n99\n999\nanimal crossing\nPokeémonß\nsuper mario bros.\npackman\nanimal crossing: new leaf");
 
-    string new_pattern = "";
+    string new_pattern = u"";
 
     for (const auto& ch : fz.get_pattern()) {
         new_pattern.push_back(ch);

@@ -2,6 +2,11 @@
 #include <algorithm>
 
 template<typename string>
+Fuzzy<string>::Fuzzy()
+{
+}
+
+template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern)
 {
     this->set_pattern(pattern);
@@ -29,21 +34,25 @@ void Fuzzy<string>::set_separator(const string &separator)
 }
 
 template<typename string>
-void Fuzzy<string>::set_data(const string& text)
+void Fuzzy<string>::set_data(const string& data)
 {
     if (this->m_pattern.empty())
         return;
 
-    this->m_data = this->separate(text);
+    this->m_data = this->separate(data);
+
+    this->m_result.reserve(this->m_data.size());
 }
 
 template<typename string>
-void Fuzzy<string>::set_data(const std::vector<string> &vector)
+void Fuzzy<string>::set_data(const std::vector<string> &data)
 {
     if (this->m_pattern.empty())
         return;
 
-    this->m_data = vector;
+    this->m_data = data;
+
+    this->m_result.reserve(this->m_data.size());
 }
 
 template<typename string>

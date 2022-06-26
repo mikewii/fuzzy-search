@@ -12,14 +12,14 @@ class Fuzzy {
     using char_type = typename string::value_type;
 
 public:
-    Fuzzy(){};
+    Fuzzy();
     explicit Fuzzy(const string& pattern);
     explicit Fuzzy(const string& pattern, const string& separator);
 
     void process(void);
 
-    void set_data(const string& text);
-    void set_data(const std::vector<string>& vector);
+    void set_data(const string& data);
+    void set_data(const std::vector<string>& data);
 
     void set_pattern(const string& pattern);
     void set_separator(const string& separator);

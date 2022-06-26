@@ -8,11 +8,18 @@ Fuzzy<string>::Fuzzy(const string &pattern)
 }
 
 template<typename string>
+Fuzzy<string>::Fuzzy(const string &pattern, const string &separator)
+    : m_separator(separator)
+{
+    this->set_pattern(pattern);
+}
+
+template<typename string>
 void Fuzzy<string>::set_pattern(const string &pattern)
 {
     this->m_pattern = pattern;
     this->m_pattern_size = pattern.length();
-    this->make_sets();
+    this->initialize_sets();
 }
 
 template<typename string>
@@ -78,7 +85,7 @@ const std::vector<string> Fuzzy<string>::separate(const string &text)
 }
 
 template<typename string>
-void Fuzzy<string>::make_sets(void)
+void Fuzzy<string>::initialize_sets(void)
 {
     for (const auto& ch : this->m_pattern) {
         this->m_set.insert(ch);

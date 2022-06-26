@@ -29,27 +29,29 @@ void Fuzzy<string>::set_separator(const string &separator)
 }
 
 template<typename string>
-void Fuzzy<string>::search(const string& text)
+void Fuzzy<string>::set_data(const string& text)
 {
     if (this->m_pattern.empty())
         return;
 
-    this->process(this->separate(text));
+    this->m_data = this->separate(text);
 }
 
 template<typename string>
-void Fuzzy<string>::search(const std::vector<string> &vector)
+void Fuzzy<string>::set_data(const std::vector<string> &vector)
 {
     if (this->m_pattern.empty())
         return;
 
-    this->process(vector);
+    this->m_data = vector;
 }
 
 template<typename string>
-void Fuzzy<string>::process(const std::vector<string> &vector)
+void Fuzzy<string>::process(void)
 {
-    for (const auto& line : vector) {
+    this->m_result.clear();
+
+    for (const auto& line : this->m_data) {
         std::unordered_multiset<char_type> multiset_line;
         size_t hits = 0;
 
@@ -87,6 +89,9 @@ const std::vector<string> Fuzzy<string>::separate(const string &text)
 template<typename string>
 void Fuzzy<string>::initialize_sets(void)
 {
+    this->m_set.clear();
+    this->m_multiset.clear();
+
     for (const auto& ch : this->m_pattern) {
         this->m_set.insert(ch);
         this->m_multiset.insert(ch);

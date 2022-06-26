@@ -23,7 +23,6 @@ template<typename string>
 void Fuzzy<string>::set_pattern(const string &pattern)
 {
     this->m_pattern = pattern;
-    this->m_pattern_size = pattern.length();
     this->initialize_sets();
 }
 

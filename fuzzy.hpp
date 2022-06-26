@@ -42,15 +42,21 @@ public:
     std::vector<string>         get_result(void) { return this->m_result; }
     const std::vector<string>&  get_result(void) const { return this->m_result; }
 
+    std::vector<string>         get_data(void) { return this->m_data; }
+    const std::vector<string>&  get_data(void) const { return this->m_data; }
+
     string          get_pattern(void) { return this->m_pattern; }
     const string&   get_pattern(void) const { return this->m_pattern; }
+
+    string          get_separator(void) { return this->m_separator; }
+    const string&   get_separator(void) const { return this->m_separator; }
 
 private:
     std::vector<string>                 m_data;
     std::vector<string>                 m_result;
     std::unordered_set<char_type>       m_set;
     std::unordered_multiset<char_type>  m_multiset;
-    string  m_pattern, m_separator, m_pattern_size;
+    string  m_pattern, m_separator;
 
     const std::vector<string> separate(const string& text);
     void initialize_sets(void);

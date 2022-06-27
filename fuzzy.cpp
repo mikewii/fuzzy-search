@@ -65,22 +65,20 @@ void Fuzzy<string>::process(void)
     }
 
     for (auto it = this->m_data.begin(); it < this->m_data.end(); it++) {
-        std::unordered_multiset<char_type> multiset_line;
         size_t hits = 0;
         string line = *it;
 
         if (this->m_ignore_case)
             this->to_lower(line);
 
-        for (const auto& ch : line)
-            multiset_line.insert(ch);
-
-        for (const auto& ch : this->m_set) {
-            const auto& pattern_char_count = this->m_multiset.count(ch);
-            const auto& line_char_count = multiset_line.count(ch);
-
-            if (line_char_count >= pattern_char_count)
-                hits++;
+        switch (this->m_mode) {
+        default:
+        case FZ_SEARCH_BY_CHAR_COUNT:
+            hits = this->search_by_char_count(line);
+            break;
+        case FZ_SEARCH_BY_CHAR_PRESENCE:
+            hits = this->search_by_char_presence(line);
+            break;
         }
 
         if (hits == this->m_set.size())
@@ -129,4 +127,40 @@ void Fuzzy<string>::to_lower(string &str)
     {
         return std::tolower(c);
     });
+}
+
+template<typename string>
+const size_t Fuzzy<string>::search_by_char_count(const string &line) const
+{
+    std::unordered_multiset<char_type> line_multiset;
+    size_t hits = 0;
+
+    for (const auto& ch : line)
+        line_multiset.insert(ch);
+
+    for (const auto& ch : this->m_set) {
+        const auto& pattern_char_count = this->m_multiset.count(ch);
+        const auto& line_char_count = line_multiset.count(ch);
+
+        if (line_char_count >= pattern_char_count)
+            hits++;
+    }
+
+    return hits;
+}
+
+template<typename string>
+const size_t Fuzzy<string>::search_by_char_presence(const string &line) const
+{
+    std::unordered_set<char_type> line_set;
+    size_t hits = 0;
+
+    for (const auto& ch : line)
+        line_set.insert(ch);
+
+    for (const auto& ch : this->m_set)
+        if (line_set.count(ch) >= 1)
+            hits++;
+
+    return hits;
 }

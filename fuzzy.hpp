@@ -8,9 +8,8 @@
 #include <codecvt>
 
 enum {
-    FZ_IGNORE_CASE,
-    FZ_COUNT_CHARS,
-    FZ_NO_COUNT_CHARS
+    FZ_SEARCH_BY_CHAR_COUNT = 0,
+    FZ_SEARCH_BY_CHAR_PRESENCE
 };
 
 template <typename string>
@@ -18,6 +17,8 @@ class Fuzzy {
     using char_type = typename string::value_type;
 
 public:
+
+
     Fuzzy();
     explicit Fuzzy(const string& pattern);
     explicit Fuzzy(const string& pattern, const string& separator);
@@ -61,6 +62,7 @@ public:
     typename std::enable_if<std::is_same<ch, char>::value, string>::type
     convert(const std::string& str) { return str; }
 
+    void                        set_mode(const int mode) { this->m_mode = mode; }
     void                        set_ignore_case(const bool value);
 
     void                        set_data(const string& data);
@@ -88,10 +90,14 @@ private:
     std::unordered_multiset<char_type>  m_multiset;
     string  m_pattern, m_separator;
     bool    m_ignore_case;
+    size_t  m_mode;
 
     void separate(const string& text);
     void initialize_sets(void);
     void to_lower(string& str);
+
+    const size_t search_by_char_count(const string& line) const;
+    const size_t search_by_char_presence(const string& line) const;
 };
 
 template class Fuzzy<std::string>;

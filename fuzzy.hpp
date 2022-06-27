@@ -7,6 +7,12 @@
 #include <locale>
 #include <codecvt>
 
+enum {
+    FZ_IGNORE_CASE,
+    FZ_COUNT_CHARS,
+    FZ_NO_COUNT_CHARS
+};
+
 template <typename string>
 class Fuzzy {
     using char_type = typename string::value_type;
@@ -37,6 +43,23 @@ public:
         for (const auto& line : this->m_result)
             std::cout << converter.to_bytes(line) << std::endl;
     }
+
+    template <typename ch = char_type>
+    typename std::enable_if<!std::is_same<ch, char>::value, string>::type
+    convert(const std::string& str)
+    {
+        std::wstring_convert<std::codecvt_utf8<char_type>, char_type> converter;
+        string out;
+
+        for (const auto& c : str)
+            out.push_back(c);
+
+        return out;
+    }
+
+    template <typename ch = char_type>
+    typename std::enable_if<std::is_same<ch, char>::value, string>::type
+    convert(const std::string& str) { return str; }
 
     void                        set_ignore_case(const bool value);
 

@@ -60,7 +60,7 @@ void Fuzzy<string>::process(void)
     this->m_result.clear();
 
     if (this->m_pattern.empty()) {
-        this->m_result.push_back("Fuzzy:: search pattern is empty!");
+        this->m_result.push_back(this->convert("Fuzzy:: search pattern is empty!"));
         return;
     }
 

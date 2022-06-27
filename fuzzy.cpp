@@ -41,9 +41,6 @@ void Fuzzy<string>::set_separator(const string &separator)
 template<typename string>
 void Fuzzy<string>::set_data(const string& data)
 {
-    if (this->m_pattern.empty())
-        return;
-
     this->separate(data);
 
     this->m_result.reserve(this->m_data.size());
@@ -52,9 +49,6 @@ void Fuzzy<string>::set_data(const string& data)
 template<typename string>
 void Fuzzy<string>::set_data(const std::vector<string> &data)
 {
-    if (this->m_pattern.empty())
-        return;
-
     this->m_data = data;
 
     this->m_result.reserve(this->m_data.size());
@@ -64,6 +58,11 @@ template<typename string>
 void Fuzzy<string>::process(void)
 {
     this->m_result.clear();
+
+    if (this->m_pattern.empty()) {
+        this->m_result.push_back("Fuzzy:: search pattern is empty!");
+        return;
+    }
 
     for (auto it = this->m_data.begin(); it < this->m_data.end(); it++) {
         std::unordered_multiset<char_type> multiset_line;

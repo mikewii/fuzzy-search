@@ -4,20 +4,23 @@
 
 template<typename string>
 Fuzzy<string>::Fuzzy()
-    : m_ignore_case(false), m_mode(FZ_SEARCH_BY_CHAR_COUNT)
+    : m_ignore_case(false), m_ignore_duplicates(false)
+    , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
 }
 
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern)
-    : m_ignore_case(false), m_mode(FZ_SEARCH_BY_CHAR_COUNT)
+    : m_ignore_case(false), m_ignore_duplicates(false)
+    , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
     this->set_pattern(pattern);
 }
 
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern, const string &separator)
-    : m_separator(separator), m_ignore_case(false), m_mode(FZ_SEARCH_BY_CHAR_COUNT)
+    : m_separator(separator), m_ignore_case(false)
+    , m_ignore_duplicates(false), m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
     this->set_pattern(pattern);
 }
@@ -40,6 +43,24 @@ void Fuzzy<string>::set_separator(const string &separator)
 }
 
 template<typename string>
+const bool Fuzzy<string>::prepare(void)
+{
+    this->m_result.clear();
+
+    if (this->m_pattern.empty()) {
+        return false;
+    }
+
+    if (this->m_ignore_case)
+        this->set_pattern(this->m_pattern);
+
+    if (this->m_ignore_duplicates)
+        this->set_pattern(this->remove_duplicates(this->m_pattern));
+
+    return true;
+}
+
+template<typename string>
 void Fuzzy<string>::set_data(const string& data)
 {
     this->separate(data);
@@ -58,16 +79,14 @@ void Fuzzy<string>::set_data(const std::vector<string> &data)
 template<typename string>
 void Fuzzy<string>::process(void)
 {
-    this->m_result.clear();
-
-    if (this->m_pattern.empty()) {
+    if (!this->prepare()) {
         this->m_result.push_back(this->convert("Fuzzy:: search pattern is empty!"));
         return;
     }
 
     for (auto it = this->m_data.begin(); it < this->m_data.end(); it++) {
-        size_t hits = 0;
         string line = *it;
+        bool push = false;
 
         if (this->m_ignore_case)
             this->to_lower(line);
@@ -75,28 +94,19 @@ void Fuzzy<string>::process(void)
         switch (this->m_mode) {
         default:
         case FZ_SEARCH_BY_CHAR_COUNT:
-            hits = this->search_by_char_count(line);
+            push = this->search_by_char_count(line);
             break;
         case FZ_SEARCH_BY_CHAR_PRESENCE:
-            hits = this->search_by_char_presence(line);
+            push = this->search_by_char_presence(line);
             break;
         case FZ_SEARCH_BY_CHAR_ORDER:
-            hits = this->search_by_char_order(line);
+            push = this->search_by_char_order(line);
             break;
         }
 
-        if (hits == this->m_set.size())
+        if (push)
             this->m_result.push_back(*it);
     }
-}
-
-template<typename string>
-void Fuzzy<string>::set_ignore_case(const bool value)
-{
-    this->m_ignore_case = value;
-
-    // reinitialize pattern to apply ignore case
-    this->set_pattern(this->m_pattern);
 }
 
 template<typename string>
@@ -134,7 +144,23 @@ void Fuzzy<string>::to_lower(string &str)
 }
 
 template<typename string>
-const size_t Fuzzy<string>::search_by_char_count(const string &line) const
+string Fuzzy<string>::remove_duplicates(const string &str) const
+{
+    std::unordered_set<char_type> set;
+    string out = str;
+
+    auto filter = [&] (const char_type c)
+    {
+        return !(set.insert(c).second);
+    };
+
+    out.erase(std::remove_if(out.begin(), out.end(), filter), out.end());
+
+    return out;
+}
+
+template<typename string>
+const bool Fuzzy<string>::search_by_char_count(const string &line) const
 {
     std::unordered_multiset<char_type> line_multiset;
     size_t hits = 0;
@@ -150,11 +176,11 @@ const size_t Fuzzy<string>::search_by_char_count(const string &line) const
             hits++;
     }
 
-    return hits;
+    return hits == this->m_set.size();
 }
 
 template<typename string>
-const size_t Fuzzy<string>::search_by_char_presence(const string &line) const
+const bool Fuzzy<string>::search_by_char_presence(const string &line) const
 {
     std::unordered_set<char_type> line_set;
     size_t hits = 0;
@@ -166,11 +192,11 @@ const size_t Fuzzy<string>::search_by_char_presence(const string &line) const
         if (line_set.count(ch) >= 1)
             hits++;
 
-    return hits;
+    return hits == this->m_set.size();
 }
 
 template<typename string>
-const size_t Fuzzy<string>::search_by_char_order(const string &line) const
+const bool Fuzzy<string>::search_by_char_order(const string &line) const
 {
     size_t hits = 0, next_pos = 0;
 
@@ -189,5 +215,5 @@ const size_t Fuzzy<string>::search_by_char_order(const string &line) const
         }
     }
 
-    return hits;
+    return hits == this->m_pattern.length();
 }

@@ -79,7 +79,9 @@ public:
     convert(const std::string& str) { return str; }
 
     void                        set_mode(const int mode) { this->m_mode = mode; }
-    void                        set_ignore_case(const bool value);
+
+    void                        set_ignore_duplicates_for_char_order_mode(const bool value) { this->m_ignore_duplicates = value; }
+    void                        set_ignore_case(const bool value) { this->m_ignore_case = value; }
 
     void                        set_data(const string& data);
     void                        set_data(const std::vector<string>& data);
@@ -105,16 +107,19 @@ private:
     std::unordered_set<char_type>       m_set;
     std::unordered_multiset<char_type>  m_multiset;
     string  m_pattern, m_separator;
-    bool    m_ignore_case;
+    bool    m_ignore_case, m_ignore_duplicates;
     size_t  m_mode;
+
+    const bool prepare(void);
 
     void separate(const string& text);
     void initialize_sets(void);
     void to_lower(string& str);
+    string remove_duplicates(const string& str) const;
 
-    const size_t search_by_char_count(const string& line) const;
-    const size_t search_by_char_presence(const string& line) const;
-    const size_t search_by_char_order(const string& line) const;
+    const bool search_by_char_count(const string& line) const;
+    const bool search_by_char_presence(const string& line) const;
+    const bool search_by_char_order(const string& line) const;
 };
 
 template class Fuzzy<std::string>;

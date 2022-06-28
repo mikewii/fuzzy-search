@@ -7,9 +7,10 @@ int main()
 {
     Fuzzy<string> fz;
 
-    fz.set_pattern("acnl");
+    fz.set_pattern("aacnnll");
     fz.set_separator("\n");
     fz.set_ignore_case(true);
+    fz.set_ignore_duplicates_for_char_order_mode(true);
 
     fz.set_mode(FZ_SEARCH_BY_CHAR_ORDER);
 

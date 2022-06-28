@@ -1,22 +1,23 @@
 #include "fuzzy.hpp"
 #include <algorithm>
+#include <set>
 
 template<typename string>
 Fuzzy<string>::Fuzzy()
-    : m_ignore_case(false)
+    : m_ignore_case(false), m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
 }
 
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern)
-    : m_ignore_case(false)
+    : m_ignore_case(false), m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
     this->set_pattern(pattern);
 }
 
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern, const string &separator)
-    : m_separator(separator), m_ignore_case(false)
+    : m_separator(separator), m_ignore_case(false), m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
     this->set_pattern(pattern);
 }
@@ -78,6 +79,9 @@ void Fuzzy<string>::process(void)
             break;
         case FZ_SEARCH_BY_CHAR_PRESENCE:
             hits = this->search_by_char_presence(line);
+            break;
+        case FZ_SEARCH_BY_CHAR_ORDER:
+            hits = this->search_by_char_order(line);
             break;
         }
 
@@ -161,6 +165,29 @@ const size_t Fuzzy<string>::search_by_char_presence(const string &line) const
     for (const auto& ch : this->m_set)
         if (line_set.count(ch) >= 1)
             hits++;
+
+    return hits;
+}
+
+template<typename string>
+const size_t Fuzzy<string>::search_by_char_order(const string &line) const
+{
+    size_t hits = 0, next_pos = 0;
+
+    for (size_t i = 0; i < this->m_pattern.length(); i++) {
+        const auto& ch = this->m_pattern.at(i);
+
+        for (size_t pos = next_pos; pos < line.length(); pos++) {
+            const auto& line_ch = line.at(pos);
+
+            next_pos = pos;
+
+            if (line_ch == ch) {
+                hits++;
+                break;
+            }
+        }
+    }
 
     return hits;
 }

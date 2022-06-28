@@ -7,9 +7,27 @@
 #include <locale>
 #include <codecvt>
 
+///
+/// \brief Fuzzy search mode values
+/// \param FZ_SEARCH_BY_CHAR_COUNT ex:
+/// pattern: pp
+/// words: ppoe, poe
+/// result: ppoe
+///
+/// \param FZ_SEARCH_BY_CHAR_PRESENCE ex:
+/// pattern: pp
+/// words: ppoe, poe
+/// result: ppoe, poe
+///
+/// \param FZ_SEARCH_BY_CHAR_ORDER ex:
+/// pattern: poe
+/// words: pose, eop
+/// result: pose
+///
 enum {
     FZ_SEARCH_BY_CHAR_COUNT = 0,
-    FZ_SEARCH_BY_CHAR_PRESENCE
+    FZ_SEARCH_BY_CHAR_PRESENCE,
+    FZ_SEARCH_BY_CHAR_ORDER
 };
 
 template <typename string>
@@ -17,8 +35,6 @@ class Fuzzy {
     using char_type = typename string::value_type;
 
 public:
-
-
     Fuzzy();
     explicit Fuzzy(const string& pattern);
     explicit Fuzzy(const string& pattern, const string& separator);
@@ -98,6 +114,7 @@ private:
 
     const size_t search_by_char_count(const string& line) const;
     const size_t search_by_char_presence(const string& line) const;
+    const size_t search_by_char_order(const string& line) const;
 };
 
 template class Fuzzy<std::string>;

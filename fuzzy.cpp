@@ -4,15 +4,13 @@
 
 template<typename string>
 Fuzzy<string>::Fuzzy()
-    : m_ignore_case(false), m_ignore_duplicates(false)
-    , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
+    : m_ignore_case(false) , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
 }
 
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern)
-    : m_ignore_case(false), m_ignore_duplicates(false)
-    , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
+    : m_ignore_case(false) , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
     this->set_pattern(pattern);
 }
@@ -20,7 +18,7 @@ Fuzzy<string>::Fuzzy(const string &pattern)
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern, const string &separator)
     : m_separator(separator), m_ignore_case(false)
-    , m_ignore_duplicates(false), m_mode(FZ_SEARCH_BY_CHAR_COUNT)
+    , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
     this->set_pattern(pattern);
 }
@@ -54,7 +52,7 @@ const bool Fuzzy<string>::prepare(void)
     if (this->m_ignore_case)
         this->set_pattern(this->m_pattern);
 
-    if (this->m_ignore_duplicates)
+    if (this->m_mode == FZ_SEARCH_BY_CHAR_ORDER_IGNORE_DUPLICATES)
         this->set_pattern(this->remove_duplicates(this->m_pattern));
 
     return true;
@@ -100,6 +98,7 @@ void Fuzzy<string>::process(void)
             push = this->search_by_char_presence(line);
             break;
         case FZ_SEARCH_BY_CHAR_ORDER:
+        case FZ_SEARCH_BY_CHAR_ORDER_IGNORE_DUPLICATES:
             push = this->search_by_char_order(line);
             break;
         }
@@ -210,6 +209,7 @@ const bool Fuzzy<string>::search_by_char_order(const string &line) const
 
             if (line_ch == ch) {
                 hits++;
+                next_pos++;
                 break;
             }
         }

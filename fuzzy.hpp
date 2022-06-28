@@ -24,10 +24,16 @@
 /// words: pose, eop
 /// result: pose
 ///
+/// \param FZ_SEARCH_BY_CHAR_ORDER_IGNORE_DUPLICATES ex:
+/// pattern: ppooe
+/// words: pose, eop
+/// result: pose
+///
 enum {
     FZ_SEARCH_BY_CHAR_COUNT = 0,
     FZ_SEARCH_BY_CHAR_PRESENCE,
-    FZ_SEARCH_BY_CHAR_ORDER
+    FZ_SEARCH_BY_CHAR_ORDER,
+    FZ_SEARCH_BY_CHAR_ORDER_IGNORE_DUPLICATES
 };
 
 template <typename string>
@@ -80,7 +86,6 @@ public:
 
     void                        set_mode(const int mode) { this->m_mode = mode; }
 
-    void                        set_ignore_duplicates_for_char_order_mode(const bool value) { this->m_ignore_duplicates = value; }
     void                        set_ignore_case(const bool value) { this->m_ignore_case = value; }
 
     void                        set_data(const string& data);
@@ -107,7 +112,7 @@ private:
     std::unordered_set<char_type>       m_set;
     std::unordered_multiset<char_type>  m_multiset;
     string  m_pattern, m_separator;
-    bool    m_ignore_case, m_ignore_duplicates;
+    bool    m_ignore_case;
     size_t  m_mode;
 
     const bool prepare(void);

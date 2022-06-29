@@ -74,6 +74,14 @@ void Fuzzy<string>::set_data(const string& data)
 }
 
 template<typename string>
+void Fuzzy<string>::set_data(const std::vector<string> &data)
+{
+    this->m_data = data;
+
+    this->m_result.reserve(this->m_data.size());
+}
+
+template<typename string>
 void Fuzzy<string>::set_data(const std::vector<string> *data)
 {
     this->m_data_ptr = data;

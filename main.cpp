@@ -16,7 +16,7 @@ int main()
     fz.set_mode(FZ_SEARCH_BY_CHAR_ORDER_IGNORE_DUPLICATES);
 
     //fz.set_data("pppppp\n99\n999\nanimal crossing\nPokeémonß\nsuper mario bros.\npackman\nanimal crossing: new leaf");
-    fz.set_data(&data);
+    fz.set_data(data);
 
     string new_pattern = "";
 

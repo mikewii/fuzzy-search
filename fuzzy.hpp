@@ -70,7 +70,7 @@ public:
 
     template <typename ch = char_type>
     typename std::enable_if<!std::is_same<ch, char>::value, string>::type
-    convert(const std::string& str)
+    convert(const std::string& str) const
     {
         std::wstring_convert<std::codecvt_utf8<char_type>, char_type> converter;
         string out;
@@ -83,7 +83,7 @@ public:
 
     template <typename ch = char_type>
     typename std::enable_if<std::is_same<ch, char>::value, string>::type
-    convert(const std::string& str) { return str; }
+    convert(const std::string& str) const { return str; }
 
     void                        set_mode(const int mode) { this->m_mode = mode; }
 
@@ -99,8 +99,8 @@ public:
     std::vector<string>         get_result(void) { return this->m_result; }
     const std::vector<string>&  get_result(void) const { return this->m_result; }
 
-    std::vector<string>         get_data(void) { return this->m_data; }
-    const std::vector<string>&  get_data(void) const { return this->m_data; }
+    std::vector<string>         get_data(void) { return this->m_data_ptr ? *this->m_data_ptr : this->m_data; }
+    const std::vector<string>&  get_data(void) const { return this->m_data_ptr ? *this->m_data_ptr : this->m_data; }
 
     string                      get_pattern(void) { return this->m_pattern; }
     const string&               get_pattern(void) const { return this->m_pattern; }

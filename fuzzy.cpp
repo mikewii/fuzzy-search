@@ -4,23 +4,30 @@
 
 template<typename string>
 Fuzzy<string>::Fuzzy()
-    : m_ignore_case(false) , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
+    : m_data_ptr(nullptr), m_ignore_case(false) , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
 }
 
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern)
-    : m_ignore_case(false) , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
+    : m_data_ptr(nullptr), m_ignore_case(false) , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
     this->set_pattern(pattern);
 }
 
 template<typename string>
 Fuzzy<string>::Fuzzy(const string &pattern, const string &separator)
-    : m_separator(separator), m_ignore_case(false)
-    , m_mode(FZ_SEARCH_BY_CHAR_COUNT)
+    : m_data_ptr(nullptr), m_separator(separator)
+    , m_ignore_case(false), m_mode(FZ_SEARCH_BY_CHAR_COUNT)
 {
     this->set_pattern(pattern);
+}
+
+template<typename string>
+Fuzzy<string>::~Fuzzy()
+{
+    // no need to free, we dont own this object
+    this->m_data_ptr = nullptr;
 }
 
 template<typename string>
@@ -67,11 +74,11 @@ void Fuzzy<string>::set_data(const string& data)
 }
 
 template<typename string>
-void Fuzzy<string>::set_data(const std::vector<string> &data)
+void Fuzzy<string>::set_data(const std::vector<string> *data)
 {
-    this->m_data = data;
+    this->m_data_ptr = data;
 
-    this->m_result.reserve(this->m_data.size());
+    this->m_result.reserve(this->m_data_ptr->size());
 }
 
 template<typename string>
@@ -82,7 +89,9 @@ void Fuzzy<string>::process(void)
         return;
     }
 
-    for (auto it = this->m_data.begin(); it < this->m_data.end(); it++) {
+    const std::vector<string>& data = this->m_data_ptr ? *this->m_data_ptr : this->m_data;
+
+    for (auto it = data.begin(); it < data.end(); it++) {
         string line = *it;
         bool push = false;
 

@@ -44,6 +44,7 @@ public:
     Fuzzy();
     explicit Fuzzy(const string& pattern);
     explicit Fuzzy(const string& pattern, const string& separator);
+    ~Fuzzy();
 
     void process(void);    
 
@@ -90,6 +91,7 @@ public:
 
     void                        set_data(const string& data);
     void                        set_data(const std::vector<string>& data);
+    void                        set_data(const std::vector<string>* data);
 
     void                        set_pattern(const string& pattern);
     void                        set_separator(const string& separator);
@@ -108,6 +110,7 @@ public:
 
 private:
     std::vector<string>                 m_data;
+    const std::vector<string>*          m_data_ptr;
     std::vector<string>                 m_result;
     std::unordered_set<char_type>       m_set;
     std::unordered_multiset<char_type>  m_multiset;
@@ -128,5 +131,7 @@ private:
 };
 
 template class Fuzzy<std::string>;
+template class Fuzzy<std::wstring>;
 template class Fuzzy<std::u16string>;
 template class Fuzzy<std::u32string>;
+
